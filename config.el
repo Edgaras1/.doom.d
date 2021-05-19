@@ -16,7 +16,9 @@
   (org-capture nil "i"))
   (define-key global-map (kbd "C-c i") 'org-capture-inbox)
 
-  (setq org-log-done t
+  (setq
+        org-agenda-skip-scheduled-if-done t
+        org-log-done t
         org-log-into-drawer t
         org-todo-keywords
                 '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
@@ -40,13 +42,13 @@
                            (agenda "" (
                                        (org-agenda-start-day "1d")
                                        (org-agenda-start-on-weekday nil)
-                                       (org-agenda-span 1)
-                                       (org-agenda-scheduled-leaders (quote ("" "S%3d: "))) ;; replace 'Scheduled:'
+                                       (org-agenda-span 1)                      ;; S%2d:
+                                       (org-agenda-scheduled-leaders (quote ("" ""))) ;; replace 'Scheduled:'
                                        (org-super-agenda-groups'(
                                                                  (:name none :deadline t :order 0)
                                                                  (:name none :time-grid t :order 1)
                                                                  (:name "Daily medicine" :and (:scheduled t :tag "medicine") :order 2)
-                                                                 (:name "Other" :order 3 :scheduled today )
+                                                                 (:name "Other" :order 3 :scheduled t )
                                                                  (:discard (:anything))))
                                        ))
                            (todo "NEXT"
