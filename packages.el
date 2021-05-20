@@ -52,3 +52,4 @@
 (package! org-ql)
 (package! modus-themes)
 (package! moe-theme)
+(package! org-pretty-tags)

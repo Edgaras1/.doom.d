@@ -61,3 +61,11 @@
                                        (org-agenda-overriding-header "\nInbox\n")))
                            (tags "CLOSED>=\"<today>\""
                                  ((org-agenda-overriding-header "\nCompleted today\n")))))))(org-super-agenda-mode))
+
+(use-package org-pretty-tags
+  :diminish org-pretty-tags-mode
+  :ensure t
+  :config
+  (setq org-pretty-tags-surrogate-strings
+        '(("work"  . "⚒")))
+  (org-pretty-tags-global-mode))
