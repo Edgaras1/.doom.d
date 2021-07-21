@@ -189,6 +189,111 @@
         (:overtime      (format " <u>Overtime!</u> %s" (org-pomodoro-format-seconds))))
                         " <u>No Active task</u>"))
 
+(setq elfeed-db-directory "~/Dropbox/ORG/elfeed")
+
+(defun elfeed-play-with-mpv ()
+  "Play entry link with mpv."
+  (interactive)
+  (let ((entry (if (eq major-mode 'elfeed-show-mode) elfeed-show-entry (elfeed-search-selected :single)))
+        (quality-arg "")
+        (quality-val (completing-read "Max height resolution (0 for unlimited): " '("1080" "0" "480" "720" ) nil nil)))
+    (setq quality-val (string-to-number quality-val))
+    (message "Opening %s with height≤%s with mpv..." (elfeed-entry-link entry) quality-val)
+    (when (< 0 quality-val)
+      (setq quality-arg (format "--ytdl-format=[height<=?%s]" quality-val)))
+    (start-process "elfeed-mpv" nil "mpv" quality-arg (elfeed-entry-link entry))))
+
+(defvar elfeed-mpv-patterns
+  '("youtu\\.?be")
+  "List of regexp to match against elfeed entry link to know
+whether to use mpv to visit the link.")
+
+(defun elfeed-visit-or-play-with-mpv ()
+  "Play in mpv if entry link matches `elfeed-mpv-patterns', visit otherwise.
+See `elfeed-play-with-mpv'."
+  (interactive)
+  (let ((entry (if (eq major-mode 'elfeed-show-mode) elfeed-show-entry (elfeed-search-selected :single)))
+        (patterns elfeed-mpv-patterns))
+    (while (and patterns (not (string-match (car elfeed-mpv-patterns) (elfeed-entry-link entry))))
+      (setq patterns (cdr patterns)))
+    (if patterns
+        (elfeed-play-with-mpv)
+      (if (eq major-mode 'elfeed-search-mode)
+          (elfeed-search-browse-url)
+        (elfeed-show-visit)))))
+
+(defun ap/elfeed-search-browse-org ()
+  "Open selected items as Org."
+  (interactive)
+  (let ((browse-url-browser-function (lambda (url _)
+                                       (org-web-tools-read-url-as-org url))))
+    (ap/elfeed-search-selected-map #'ap/elfeed-search-browse-entry)))
+
+(defun ap/elfeed-search-browse-entry (entry)
+  "Browse ENTRY with `browse-url' and mark as read.
+If ENTRY is unread, it will also be unstarred.  To override the
+browser function, bind `browse-url-browser-function' around the
+call to this."
+  (let ((url (elfeed-entry-link entry))
+        (tags (elfeed-entry-tags entry)))
+    ;; Mark as read first, because apparently the elfeed functions don't work after `browse-url'
+    ;; potentially changes the buffer.
+    (elfeed-untag entry 'unread)
+    (elfeed-search-update-entry entry)
+    (browse-url url)))
+
+(cl-defun ap/elfeed-search-selected-map (fn)
+  "Map FN across selected entries in elfeed-search buffer using `mapcar'."
+  (mapcar fn (elfeed-search-selected)))
+
+(use-package org-roam
+  :custom
+  (org-roam-directory (file-truename "~/Dropbox/ORG/roam"))
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n g" . org-roam-graph)
+         ("C-c n i" . org-roam-node-insert)
+         ("C-c n c" . org-roam-capture)
+         ;; Dailies
+         ("C-c n j" . org-roam-dailies-capture-today))
+  :config
+  (setq org-roam-v2-ack t)
+
+  ;;Confugre buffer to show all
+  (setq org-roam-mode-section-functions
+      (list #'org-roam-backlinks-section
+            #'org-roam-reflinks-section
+            #'org-roam-unlinked-references-section
+            ))
+
+  ;; Control how pupup buffer is displayed
+  (add-to-list 'display-buffer-alist
+             '("\\*org-roam\\*"
+               (display-buffer-in-direction)
+               (direction . right)
+               (window-width . 0.33)
+               (window-height . fit-window-to-buffer)))
+
+
+  ;;Showing the number of backlinks for each node in org-roam-node-find
+(cl-defmethod org-roam-node-directories ((node org-roam-node))
+  (if-let ((dirs (file-name-directory (file-relative-name (org-roam-node-file node) org-roam-directory))))
+      (format "(%s)" (car (f-split dirs)))
+    ""))
+
+(cl-defmethod org-roam-node-backlinkscount ((node org-roam-node))
+  (let* ((count (caar (org-roam-db-query
+                       [:select (funcall count source)
+                                :from links
+                                :where (= dest $s1)
+                                :and (= type "id")]
+                       (org-roam-node-id node)))))
+(format "[%d]" count)))
+(setq org-roam-node-display-template "${directories:10} ${tags:10} ${title:100} ${backlinkscount:6}")
+
+
+  (org-roam-setup))
+
 (use-package org-contacts
   :ensure nil
   :after org
@@ -220,8 +325,6 @@
         (add-hook 'auto-save-hook 'org-save-all-org-buffers nil nil))
         (add-hook 'org-mode-hook 'my-org-mode-autosave-settings)
 
-
-
-
 ;hide markers
 (setq org-hide-emphasis-markers t)
+;https://github.com/awth13/org-appear
