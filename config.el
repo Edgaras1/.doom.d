@@ -99,7 +99,8 @@
                                                                  (:name none :time-grid t :order 1)
 
                                                                  (:name "Daily medicine" :and (:scheduled t :tag "medicine") :order 2)
-                                                                 (:name "Other" :order 3 :scheduled t )
+                                                                 (:name "Other" :and (:scheduled t :tag "other") :order 3)
+                                                                 (:name "Misc" :order 4 :scheduled t )
                                                                  (:discard (:anything))))
                                        ))
                            (todo "NEXT"
