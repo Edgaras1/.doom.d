@@ -297,7 +297,7 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Tool-Bar.html
        ;;idris             ;
        ;;json              ; At least it ain't XML
        ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
-       ;;javascript        ; all(hope(abandon(ye(who(enter(here))))))
+       javascript        ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
        ;;kotlin            ; a better, slicker Java(Script)
        ;;latex             ; writing papers in Emacs has never been so fun
@@ -328,7 +328,7 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Tool-Bar.html
        ;;solidity          ; do you need a blockchain? No.
        ;;swift             ; who asked for emoji variables?
        ;;terra             ; Earth and Moon in alignment for performance.
-       ;;web               ; the tubes
+       web               ; the tubes
        ;;yaml              ; JSON, but readable
 
        :email
@@ -347,8 +347,6 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Tool-Bar.html
        ;;literate
        (default +bindings +smartparens))
 #+end_src
-
-#+RESULTS:
 
 * Drop-down Emacs frame
 Call emacsclient -n -e '(yequake-toggle "org-capture")' top pop up capture window
