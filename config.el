@@ -4,6 +4,8 @@
       org-directory "~/Dropbox/ORG"
       org-agenda-files '("~/Dropbox/ORG") )
 
+(setq org-roam-v2-ack t)
+
 ;;(menu-bar-mode t) ;;-1/t enable/disable top menu
 ;;(define-key global-map [menu-bar words]
 ;;  (cons "Words" (make-sparse-keymap "Words")))
@@ -258,7 +260,6 @@ call to this."
          ;; Dailies
          ("C-c n j" . org-roam-dailies-capture-today))
   :config
-  (setq org-roam-v2-ack t)
 
   ;;Confugre buffer to show all
   (setq org-roam-mode-section-functions

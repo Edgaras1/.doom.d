@@ -8,6 +8,8 @@
 (setq
       org-directory "~/Dropbox/ORG"
       org-agenda-files '("~/Dropbox/ORG") )
+
+(setq org-roam-v2-ack t)
 #+end_src
 
 * Custom menu bar entries
@@ -532,7 +534,6 @@ https://github.com/org-roam/org-roam/wiki/Hitchhiker's-Rough-Guide-to-Org-roam-V
          ;; Dailies
          ("C-c n j" . org-roam-dailies-capture-today))
   :config
-  (setq org-roam-v2-ack t)
 
   ;;Confugre buffer to show all
   (setq org-roam-mode-section-functions
