@@ -8,8 +8,6 @@
 (setq
       org-directory "~/Dropbox/ORG"
       org-agenda-files '("~/Dropbox/ORG") )
-
-(setq org-roam-v2-ack t)
 #+end_src
 
 * Custom menu bar entries
@@ -524,6 +522,9 @@ Org-roam is a plain-text knowledge management system. It brings some of Roam's m
 https://github.com/org-roam/org-roam/wiki/Hitchhiker's-Rough-Guide-to-Org-roam-V2
 #+begin_src elisp
 (use-package org-roam
+  :ensure t
+  :init
+  (setq org-roam-v2-ack t)
   :custom
   (org-roam-directory (file-truename "~/Dropbox/ORG/roam"))
   :bind (("C-c n l" . org-roam-buffer-toggle)
