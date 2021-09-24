@@ -4,8 +4,6 @@
       org-directory "~/Dropbox/ORG"
       org-agenda-files '("~/Dropbox/ORG") )
 
-(setq org-roam-v2-ack t)
-
 ;;(menu-bar-mode t) ;;-1/t enable/disable top menu
 ;;(define-key global-map [menu-bar words]
 ;;  (cons "Words" (make-sparse-keymap "Words")))
@@ -250,6 +248,9 @@ call to this."
   (mapcar fn (elfeed-search-selected)))
 
 (use-package org-roam
+  :ensure t
+  :init
+  (setq org-roam-v2-ack t)
   :custom
   (org-roam-directory (file-truename "~/Dropbox/ORG/roam"))
   :bind (("C-c n l" . org-roam-buffer-toggle)
@@ -295,6 +296,19 @@ call to this."
 
 
   (org-roam-setup))
+
+(use-package dashboard
+  :ensure t
+  :config
+  (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+  (setq dashboard-banner-logo-title "The perils of overwork are slight compared with the dangers of inactivity.")
+  (setq dashboard-center-content t)
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t)
+  (setq dashboard-set-navigator t)
+  (setq dashboard-set-init-info t)
+
+  (dashboard-setup-startup-hook))
 
 (use-package org-contacts
   :ensure nil

@@ -158,6 +158,7 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Tool-Bar.html
 (package! yequake)
 (package! org-web-tools)
 (package! org-roam)
+(package! dashboard)
 #+end_src
 
 * Init
@@ -192,7 +193,7 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Tool-Bar.html
        :ui
        ;;deft              ; notational velocity for Emacs
        doom              ; what makes DOOM look the way it does
-       doom-dashboard    ; a nifty splash screen for Emacs
+       ;;doom-dashboard    ; a nifty splash screen for Emacs
        ;;doom-quit         ; DOOM quit-message prompts when you quit Emacs
        ;;fill-column       ; a `fill-column' indicator
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
@@ -571,6 +572,24 @@ https://github.com/org-roam/org-roam/wiki/Hitchhiker's-Rough-Guide-to-Org-roam-V
 
   (org-roam-setup))
 
+#+end_src
+
+* Dashboard
+https://github.com/emacs-dashboard/emacs-dashboard
+
+#+begin_src elisp
+(use-package dashboard
+  :ensure t
+  :config
+  (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+  (setq dashboard-banner-logo-title "The perils of overwork are slight compared with the dangers of inactivity.")
+  (setq dashboard-center-content t)
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t)
+  (setq dashboard-set-navigator t)
+  (setq dashboard-set-init-info t)
+
+  (dashboard-setup-startup-hook))
 #+end_src
 
 * Experimental

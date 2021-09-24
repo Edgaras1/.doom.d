@@ -6,3 +6,4 @@
 (package! yequake)
 (package! org-web-tools)
 (package! org-roam)
+(package! dashboard)
