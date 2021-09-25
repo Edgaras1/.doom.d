@@ -20,7 +20,7 @@
 ;;Surpress/hide/remove existing menu item. this example removes 'Edit'
 ;;(define-key global-map [menu-bar edit] 'undefined)
 
-(tool-bar-mode t)
+(tool-bar-mode -1)
 
 (defun org-agenda-show-custom (&optional arg)
   (interactive "P")
@@ -48,6 +48,11 @@
   (doom/reload))
 
 (global-set-key (kbd "C-c t r") 'tangle-and-reload)
+
+;autosave org-buffers
+(defun my-org-mode-autosave-settings ()
+        (add-hook 'auto-save-hook 'org-save-all-org-buffers nil nil))
+        (add-hook 'org-mode-hook 'my-org-mode-autosave-settings)
 
 (after! org
   (define-key global-map (kbd "C-c c") 'org-capture)
@@ -190,63 +195,6 @@
         (:overtime      (format " <u>Overtime!</u> %s" (org-pomodoro-format-seconds))))
                         " <u>No Active task</u>"))
 
-(setq elfeed-db-directory "~/Dropbox/ORG/elfeed")
-
-(defun elfeed-play-with-mpv ()
-  "Play entry link with mpv."
-  (interactive)
-  (let ((entry (if (eq major-mode 'elfeed-show-mode) elfeed-show-entry (elfeed-search-selected :single)))
-        (quality-arg "")
-        (quality-val (completing-read "Max height resolution (0 for unlimited): " '("1080" "0" "480" "720" ) nil nil)))
-    (setq quality-val (string-to-number quality-val))
-    (message "Opening %s with height≤%s with mpv..." (elfeed-entry-link entry) quality-val)
-    (when (< 0 quality-val)
-      (setq quality-arg (format "--ytdl-format=[height<=?%s]" quality-val)))
-    (start-process "elfeed-mpv" nil "mpv" quality-arg (elfeed-entry-link entry))))
-
-(defvar elfeed-mpv-patterns
-  '("youtu\\.?be")
-  "List of regexp to match against elfeed entry link to know
-whether to use mpv to visit the link.")
-
-(defun elfeed-visit-or-play-with-mpv ()
-  "Play in mpv if entry link matches `elfeed-mpv-patterns', visit otherwise.
-See `elfeed-play-with-mpv'."
-  (interactive)
-  (let ((entry (if (eq major-mode 'elfeed-show-mode) elfeed-show-entry (elfeed-search-selected :single)))
-        (patterns elfeed-mpv-patterns))
-    (while (and patterns (not (string-match (car elfeed-mpv-patterns) (elfeed-entry-link entry))))
-      (setq patterns (cdr patterns)))
-    (if patterns
-        (elfeed-play-with-mpv)
-      (if (eq major-mode 'elfeed-search-mode)
-          (elfeed-search-browse-url)
-        (elfeed-show-visit)))))
-
-(defun ap/elfeed-search-browse-org ()
-  "Open selected items as Org."
-  (interactive)
-  (let ((browse-url-browser-function (lambda (url _)
-                                       (org-web-tools-read-url-as-org url))))
-    (ap/elfeed-search-selected-map #'ap/elfeed-search-browse-entry)))
-
-(defun ap/elfeed-search-browse-entry (entry)
-  "Browse ENTRY with `browse-url' and mark as read.
-If ENTRY is unread, it will also be unstarred.  To override the
-browser function, bind `browse-url-browser-function' around the
-call to this."
-  (let ((url (elfeed-entry-link entry))
-        (tags (elfeed-entry-tags entry)))
-    ;; Mark as read first, because apparently the elfeed functions don't work after `browse-url'
-    ;; potentially changes the buffer.
-    (elfeed-untag entry 'unread)
-    (elfeed-search-update-entry entry)
-    (browse-url url)))
-
-(cl-defun ap/elfeed-search-selected-map (fn)
-  "Map FN across selected entries in elfeed-search buffer using `mapcar'."
-  (mapcar fn (elfeed-search-selected)))
-
 (use-package org-roam
   :ensure t
   :init
@@ -311,13 +259,10 @@ call to this."
   (dashboard-setup-startup-hook))
 
 (use-package org-contacts
-  :ensure nil
   :after org
   :custom (org-contacts-files '("~/Dropbox/ORG/Contacts.org")))
 
-
 (use-package org-capture
-  :ensure nil
   :after org
   :preface
   (defvar my/org-contacts-template "* %(org-contacts-template-name)
@@ -332,14 +277,7 @@ call to this."
   (org-capture-templates
    `(("c" "Contact" entry (file "~/Dropbox/ORG/Contact.org"), my/org-contacts-template :empty-lines 1)
      ("i" "Inbox" entry  (file "~/Dropbox/ORG/inbox.org") ,(concat "* TODO %?\n" "/Entered on/ %U")))
-
-
                 ))
-
-;autosave org-buffers
-(defun my-org-mode-autosave-settings ()
-        (add-hook 'auto-save-hook 'org-save-all-org-buffers nil nil))
-        (add-hook 'org-mode-hook 'my-org-mode-autosave-settings)
 
 ;hide markers
 (setq org-hide-emphasis-markers t)

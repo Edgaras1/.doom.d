@@ -36,7 +36,7 @@ Adds entries left side, use define-key-after to put at the back
 https://www.gnu.org/software/emacs/manual/html_node/elisp/Tool-Bar.html
 
 #+begin_src elisp
-(tool-bar-mode f)
+(tool-bar-mode -1)
 
 (defun org-agenda-show-custom (&optional arg)
   (interactive "P")
@@ -68,6 +68,11 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Tool-Bar.html
   (doom/reload))
 
 (global-set-key (kbd "C-c t r") 'tangle-and-reload)
+
+;autosave org-buffers
+(defun my-org-mode-autosave-settings ()
+        (add-hook 'auto-save-hook 'org-save-all-org-buffers nil nil))
+        (add-hook 'org-mode-hook 'my-org-mode-autosave-settings)
 #+end_src
 
 * Org-mode
@@ -511,17 +516,16 @@ https://github.com/emacs-dashboard/emacs-dashboard
   (dashboard-setup-startup-hook))
 #+end_src
 
-* Experimental
-#+begin_src elisp
+*
 
+* Org-Capture
+
+#+begin_src elisp
 (use-package org-contacts
-  :ensure nil
   :after org
   :custom (org-contacts-files '("~/Dropbox/ORG/Contacts.org")))
 
-
 (use-package org-capture
-  :ensure nil
   :after org
   :preface
   (defvar my/org-contacts-template "* %(org-contacts-template-name)
@@ -536,14 +540,17 @@ https://github.com/emacs-dashboard/emacs-dashboard
   (org-capture-templates
    `(("c" "Contact" entry (file "~/Dropbox/ORG/Contact.org"), my/org-contacts-template :empty-lines 1)
      ("i" "Inbox" entry  (file "~/Dropbox/ORG/inbox.org") ,(concat "* TODO %?\n" "/Entered on/ %U")))
-
-
                 ))
 
-;autosave org-buffers
-(defun my-org-mode-autosave-settings ()
-        (add-hook 'auto-save-hook 'org-save-all-org-buffers nil nil))
-        (add-hook 'org-mode-hook 'my-org-mode-autosave-settings)
+#+end_src
+
+
+* Experimental
+#+begin_src elisp
+
+
+
+
 
 ;hide markers
 (setq org-hide-emphasis-markers t)

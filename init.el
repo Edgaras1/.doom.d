@@ -175,7 +175,7 @@
        :app
        ;;calendar
        ;;irc               ; how neckbeards socialize
-       (rss +org)        ; emacs as an RSS reader https://github.com/hlissner/doom-emacs/blob/develop/modules/app/rss/README.org
+       ;;(rss +org)        ; emacs as an RSS reader https://github.com/hlissner/doom-emacs/blob/develop/modules/app/rss/README.org
        ;;twitter           ; twitter client https://twitter.com/vnought
        ;;everywhere  ;edit selected text with emacs (spawns emacs window)  ;On Linux xclip, xdotool, xprop, and xwininfo are needed. call with doom everywhere https://github.com/hlissner/doom-emacs/blob/develop/modules/app/everywhere/README.org
 
