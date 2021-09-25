@@ -36,7 +36,7 @@ Adds entries left side, use define-key-after to put at the back
 https://www.gnu.org/software/emacs/manual/html_node/elisp/Tool-Bar.html
 
 #+begin_src elisp
-(tool-bar-mode t)
+(tool-bar-mode f)
 
 (defun org-agenda-show-custom (&optional arg)
   (interactive "P")
