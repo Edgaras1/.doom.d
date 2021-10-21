@@ -209,41 +209,9 @@
          ;; Dailies
          ("C-c n j" . org-roam-dailies-capture-today))
   :config
+  (org-roam-db-autosync-mode)
 
-  ;;Confugre buffer to show all
-  (setq org-roam-mode-section-functions
-      (list #'org-roam-backlinks-section
-            #'org-roam-reflinks-section
-            #'org-roam-unlinked-references-section
-            ))
-
-  ;; Control how pupup buffer is displayed
-  (add-to-list 'display-buffer-alist
-             '("\\*org-roam\\*"
-               (display-buffer-in-direction)
-               (direction . right)
-               (window-width . 0.33)
-               (window-height . fit-window-to-buffer)))
-
-
-  ;;Showing the number of backlinks for each node in org-roam-node-find
-(cl-defmethod org-roam-node-directories ((node org-roam-node))
-  (if-let ((dirs (file-name-directory (file-relative-name (org-roam-node-file node) org-roam-directory))))
-      (format "(%s)" (car (f-split dirs)))
-    ""))
-
-(cl-defmethod org-roam-node-backlinkscount ((node org-roam-node))
-  (let* ((count (caar (org-roam-db-query
-                       [:select (funcall count source)
-                                :from links
-                                :where (= dest $s1)
-                                :and (= type "id")]
-                       (org-roam-node-id node)))))
-(format "[%d]" count)))
-(setq org-roam-node-display-template "${directories:10} ${tags:10} ${title:100} ${backlinkscount:6}")
-
-
-  (org-roam-setup))
+)
 
 (use-package dashboard
   :ensure t
