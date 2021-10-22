@@ -1,4 +1,5 @@
-(setq doom-theme 'doom-one)
+(setq doom-theme 'doom-vibrant)
+
 ;;Directories
 (setq
       org-directory "~/Dropbox/ORG"
@@ -165,8 +166,8 @@
 
     (add-hook 'org-pomodoro-tick-hook
           '(lambda ()
-            (shell-command (format "awesome-client 'screen[1].pomodoro:set_markup(\"%s\")'" (my/org-pomodoro-time)))))
-
+                (shell-command "polybar-msg hook pomodoro_emacs 1" )
+           ))
 
     (add-hook 'org-pomodoro-started-hook
 	      (apply-partially #'ed/toggle-music "Play"))
@@ -174,7 +175,7 @@
     (add-hook 'org-pomodoro-killed-hook
           '(lambda ()
             (ed/toggle-music "Pause")
-            (shell-command (format "awesome-client 'screen[1].pomodoro:set_markup(\" <u>No Active task</u>\")'"))
+             (shell-command "polybar-msg hook pomodoro_emacs 1" )
             ))
 
     (add-hook 'org-pomodoro-overtime-hook
@@ -189,11 +190,11 @@
   "Return the remaining pomodoro time"
   (if (org-pomodoro-active-p)
       (cl-case org-pomodoro-state
-        (:pomodoro      (format " %d: %s - %s" org-pomodoro-count (org-pomodoro-format-seconds) (substring-no-properties org-clock-heading)))
+        (:pomodoro      (format " %d: %s - %s | %%{A1:emacsclient -e '(org-pomodoro-kill)':} Kill %%{A}" org-pomodoro-count (org-pomodoro-format-seconds) (substring-no-properties org-clock-heading) ))
         (:short-break   (format " Short break time: %s" (org-pomodoro-format-seconds)))
         (:long-break    (format " Long break time: %s" (org-pomodoro-format-seconds)))
-        (:overtime      (format " <u>Overtime!</u> %s" (org-pomodoro-format-seconds))))
-                        " <u>No Active task</u>"))
+        (:overtime      (format " Overtime! %s | %%{A1:emacsclient -e '(org-pomodoro-finished)':} Finish %%{A}" (org-pomodoro-format-seconds))))
+                        " Get some work done | %{A1:emacsclient -e '(org-pomodoro `(16))':} Resume %{A} "  ))
 
 (use-package org-roam
   :ensure t
