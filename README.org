@@ -163,6 +163,11 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Tool-Bar.html
 (package! yequake)
 (package! org-web-tools)
 (package! dashboard)
+
+;Org-Roam-Ui
+(unpin! org-roam)
+(package! websocket)
+(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")))
 #+end_src
 
 * Init
@@ -509,7 +514,25 @@ https://github.com/emacs-dashboard/emacs-dashboard
 
 #+end_src
 
+* Org Roam UI
 
+#+begin_src elisp
+(use-package! websocket
+    :after org-roam)
+
+(use-package! org-roam-ui
+    :after org-roam ;; or :after org
+;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+;;         a hookable mode anymore, you're advised to pick something yourself
+;;         if you don't care about startup time, use
+;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+
+#+end_src
 * Experimental
 #+begin_src elisp
 
