@@ -1,5 +1,4 @@
 #+TITLE: Doom Emacs config
-#+PROPERTY: header-args :tangle config.el
 
 * Constants
 #+begin_src elisp
@@ -59,7 +58,6 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Tool-Bar.html
 (setq tool-bar-button-margin 0) ;;set margin of toolbar
 #+end_src
 
-
 * Misc Utilities / Keybinds
 
 #+begin_src elisp
@@ -111,8 +109,6 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Tool-Bar.html
         org-outline-path-complete-in-steps nil))
 #+end_src
 
-#+RESULTS:
-
 * Agenda
 
 #+begin_src elisp
@@ -152,17 +148,12 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Tool-Bar.html
                                  ((org-agenda-overriding-header "\nCompleted today\n")))))))(org-super-agenda-mode))
 #+end_src
 
-*
-
 * Packages
 
 #+begin_src elisp :tangle packages.el
 (package! org-super-agenda)
 (package! org-ql)
-(package! modus-themes)
-(package! moe-theme)
 (package! org-edna)
-(package! yequake)
 (package! org-web-tools)
 (package! dashboard)
 
@@ -170,6 +161,7 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Tool-Bar.html
 (unpin! org-roam)
 (package! websocket)
 (package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")))
+(package! orgmdb :recipe (:host github :repo "isamert/orgmdb.el"))
 #+end_src
 
 * Init
@@ -360,43 +352,6 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Tool-Bar.html
        (default +bindings +smartparens))
 #+end_src
 
-* Drop-down Emacs frame
-Call emacsclient -n -e '(yequake-toggle "org-capture")' top pop up capture window
-
-
-#+begin_src elisp
-
-(defun abs--quick-capture ()
-       ;; redefine the function that splits the frame upon org-capture
-       (defun abs--org-capture-place-template-dont-delete-windows (oldfun args)
-         (cl-letf (((symbol-function 'org-switch-to-buffer-other-window) 'switch-to-buffer))
-           (apply oldfun args)))
-
-       ;; run-once hook to close window after capture
-       (defun abs--delete-frame-after-capture ()
-         (delete-frame)
-         (remove-hook 'org-capture-after-finalize-hook 'abs--delete-frame-after-capture)
-         )
-
-       ;; set frame title
-       (set-frame-name "emacs org capture")
-       (add-hook 'org-capture-after-finalize-hook 'abs--delete-frame-after-capture)
-       (abs--org-capture-place-template-dont-delete-windows 'org-capture nil)
-  )
-
-(use-package yequake
-  :custom
-  (yequake-frames
-   '(("org-capture"
-      (buffer-fns . (yequake-org-capture))
-      (width . 0.75)
-      (height . 0.5)
-      (alpha . 0.95)
-      (frame-parameters . ((undecorated . t)
-                           (skip-taskbar . t)
-                           (sticky . t)))))))
-#+end_src
-
 * Pomodoro
 
 #+begin_src elisp
@@ -447,7 +402,6 @@ Call emacsclient -n -e '(yequake-toggle "org-capture")' top pop up capture windo
                         " Get some work done | %{A1:emacsclient -e '(org-pomodoro `(16))':} Resume %{A} "  ))
 
 #+end_src
-
 
 * Org-roam
 :LOGBOOK:
@@ -546,7 +500,7 @@ https://github.com/emacs-dashboard/emacs-dashboard
 (setq org-hide-emphasis-markers t)
 ;https://github.com/awth13/org-appear
 
-
+(setq orgmdb-omdb-apikey "36cd72f5")
 
 
 

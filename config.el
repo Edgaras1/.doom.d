@@ -120,36 +120,6 @@
                            (tags "CLOSED>=\"<today>\""
                                  ((org-agenda-overriding-header "\nCompleted today\n")))))))(org-super-agenda-mode))
 
-(defun abs--quick-capture ()
-       ;; redefine the function that splits the frame upon org-capture
-       (defun abs--org-capture-place-template-dont-delete-windows (oldfun args)
-         (cl-letf (((symbol-function 'org-switch-to-buffer-other-window) 'switch-to-buffer))
-           (apply oldfun args)))
-
-       ;; run-once hook to close window after capture
-       (defun abs--delete-frame-after-capture ()
-         (delete-frame)
-         (remove-hook 'org-capture-after-finalize-hook 'abs--delete-frame-after-capture)
-         )
-
-       ;; set frame title
-       (set-frame-name "emacs org capture")
-       (add-hook 'org-capture-after-finalize-hook 'abs--delete-frame-after-capture)
-       (abs--org-capture-place-template-dont-delete-windows 'org-capture nil)
-  )
-
-(use-package yequake
-  :custom
-  (yequake-frames
-   '(("org-capture"
-      (buffer-fns . (yequake-org-capture))
-      (width . 0.75)
-      (height . 0.5)
-      (alpha . 0.95)
-      (frame-parameters . ((undecorated . t)
-                           (skip-taskbar . t)
-                           (sticky . t)))))))
-
   (use-package org-pomodoro
     :config
     (setq org-pomodoro-length 25
@@ -266,3 +236,5 @@
 ;hide markers
 (setq org-hide-emphasis-markers t)
 ;https://github.com/awth13/org-appear
+
+(setq orgmdb-omdb-apikey "36cd72f5")
